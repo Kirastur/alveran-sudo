@@ -1,0 +1,20 @@
+name: Alveran
+version: 1.0.0
+main: de.polarwolf.alveran.main.Main
+description: Get celestical power
+authors: [Kirastur]
+api-version: 1.16
+load: POSTWORLD
+depend: [WorldEdit, WorldGuard, LuckPerms]
+
+commands:
+  alveran:
+    description: Bless players
+    permission: alveran.use
+permissions:
+  alveran.use:
+    description: Should user be able to use the alveran command?
+    default: op
+  alveran.acolyte:
+    description: Should user be able to retrieve the alveran blessing?
+    default: false

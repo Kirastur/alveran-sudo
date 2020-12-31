@@ -1,0 +1,152 @@
+#
+# Welcome to the Alveran configuration settings
+#
+# Please contact us at discord if you have any questions
+#   https://discord.gg/MBJjqUHQHR
+#
+#
+# The main purpose of this plugin is that a player
+# can accquire temporary permission by his own (like Linux "sudo")
+# Very useful in conjunction with LuckPerms "auto-op"
+#
+# Usage:
+#   simply execute "/alveran" as a player or from a command block
+#
+# If called as a user, the user must have "alveran.use" permission
+# to be allowed to execute this command
+#
+# The API can be used to call Avleran from other plugins
+# Get the API object with: 
+#   AlveranAPI alveranAPI = AlveranProvider.getAPI();
+#
+#
+# This plugin depends on LuckPerms and WorldGuard
+#
+# There is no auto-update for this plugin
+#
+
+
+general:
+  # Name of the world
+  #
+  # - Select which world is affected
+  # - "world" is the default name if you set up a new server
+  # - Alveran does only support a single world
+  # - Alveran is not tested with multiverse
+  world: world
+  
+  # If Alvaran should exposes its API to other plugins
+  #
+  # - If enabled, other Plugins can get an API object by using
+  # -  "AlveranAPI alveranAPI = AlveranProvider.getAPI();"
+  enable-api: true
+
+  # If the "alveran" command can be executed by players
+  #
+  # - If not, only Console/RCON and command blocks can execute
+  # - The main purpose of Alveran is to be called by command blocks
+  player-can-execute-command: false
+  
+  # Enable debug
+  #
+  # Debug will bring you additional output on the console
+  debug: false
+  
+
+# Authentication (Protection)
+#
+# - We have a two-factor-authentication here
+# - 1. Conscious decision (Player must stay in a specific region)
+# - 2. Authorization (Player must have permission)
+protection:
+
+  # WorldGuard Region
+  #
+  # - The player must stay in a specific region to get blessed
+  # - If more than one player with the appropriate permission stay
+  # -  inside this region, all of them are blessed
+  # - The Region must be defined in WorldGuard
+  # - The flags of the region do not matter (e.g. passthrough)   
+  region: alveran
+  
+  # Permission
+  #
+  # - Only players having this permission can be blessed
+  # - Permission check is done by LuckPerms, so this plugin is mandantory
+  # - The permission name is hard coded in plugin.yml
+  # - so please change it here only if you know what you are doing
+  permission: alveran.acolyte
+
+
+# Action (Perform blessing)
+#
+# - Define how the blessing looks like
+# - In general, a blessing is the temporary adding of a permission group
+# -  to one or more players fulfilling the above criteria
+action:
+
+  # Destination Group
+  #
+  # - The name of the group which is temporary added to the players
+  # - This group must already exists in LuckPerms
+  # - It is added as a temporary group
+  # - When the timer expires LuckPerms will remove membership automatically
+  destination-group: alveran
+  
+  # Blessing duration
+  #
+  # - Define how log the player should be member of the the group
+  # - Please enter an integer
+  # - For Re-Blessing see LuckPerms config option "temporary-add-behaviour"
+  # - Blessing is automatically removed if the player leaves the server
+  blessing-duration-hours: 24
+  
+  # Player logout behaviour
+  #
+  # - Select what happens if the player is logging out
+  # - If enabled on every login and logout Alveran checks membership
+  # -  and removes the group from the player, regardless of the timer
+  unbless-on-leave: true
+  
+  # Notify player about blessing timeout
+  #
+  # - Specify if the player should get noticed
+  # -  when the blessing has reached its lifetime
+  # -  and LuckPerms has removed the group from the player
+  # -  (or the blessing was removed manually by a LuckPerm command)
+  # -
+  # - The bless and optional unbless whisper to the player are sent
+  # -  regardless if the groupmembership was changed by Alveran 
+  # -  or manually by a LuckPerms command or API call
+  # -  so you can only use the notification part of Alveran
+  # -  without using the command
+  notify-on-unbless: true  
+
+  
+# Messages sent to the player
+#
+# - Please translate them in your language
+# - Use locale to select language
+# -  replace "_" char with "-"
+messages:
+
+  # This is the default language if locale not fond
+  default:
+
+    # This is whispered to the player after he has received the blessing
+    blessed: You have received the blessing of Alveran
+    
+    # This is whispered to the player when the blessing has times out
+    faded: The blessing of Alveran is fading away
+  
+    # This is send to the player if he tries to execute the alveran command
+    # and "player-can-execute-command" is set to false
+    executed-as-player: You cannot use this command as a player
+  
+# Locale example for germany
+#  de-de:
+#    blessed: Du hast den Segen von Alveran erhalten
+#    faded: Der Segen von Alveran verblaßt
+#    executed-as-player: Dieses Kommando darfst Du als Spieler nicht benutzen
+    
+  
