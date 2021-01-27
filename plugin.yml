@@ -1,10 +1,12 @@
 name: Alveran
-version: 1.0.0
-main: de.polarwolf.alveran.main.Main
+version: 1.1.0
 description: Get celestical power
 authors: [Kirastur]
+website: https://www.spigotmc.org/resources/alveran-sudo.87291/
+
 api-version: 1.16
 load: POSTWORLD
+main: de.polarwolf.alveran.main.Main
 depend: [WorldEdit, WorldGuard, LuckPerms]
 
 commands:

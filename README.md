@@ -13,8 +13,8 @@ e.g. he executes a command there or triggers a command block.
 
 For example the player sometimes wants to edit a command block and
 therefor needs OP status. Then the "blessing" could be
-the "luckperms.autoop" permission which gives the player OP
-if "auto-op" is set to TRUE in LuckPerms configuration.
+a LuckPerms group containing the "luckperms.autoop" permission which gives
+the player OP if "auto-op" is set to TRUE in LuckPerms configuration.
 
 ## Prerequisits
 This plugin depends on LuckPerms and WorldGuard.
@@ -22,19 +22,21 @@ This plugin depends on LuckPerms and WorldGuard.
 ## Protection
 We have a two-factor-authentication here
 1. Conscious decision (Player must stay in a specific region)
-2. Authorization (Player must have permission)
+2. Authorization (Player must have a "can get" permission)
+and an entitled source must execute the command
 
 ## Action
-If both requirements are fulfilled the player gets the permission.
-You can configure how long the permission should work and
-if the permission should get lost if the player logs out.
+If both requirements are fulfilled and the command is executed,
+the player is temporary added to a "blessing" group.
+You can configure how long the group membership should remain and
+if the group membership should get lost when the player logs out.
 
 ## Notification
-Every time the player gets the permission, a whisper is sent
-to the player, regardless if the permission was received by
+Every time the player gets the membership, a whisper is sent
+to the player, regardless if the membership was received by
 the "action" above or manually by a LuckPerms command.
 You can configure if also a whisper should be sent
-if the player looses the permission, e.g. after the time runs out.
+when the player looses the group membership, e.g. after the time runs out.
 
 ## Usage
 1. Create a region in WorldGuard and name it "alveran".
@@ -55,7 +57,10 @@ inside this region, all of them are blessed.
 ## Commands
 Simply execute "/alveran" from a command block or from console.
 If enabled in config, "/alveran" can be executed from players as well.
-This command has no parameters.
+You can optional add a world name.
+If no word name is given, the world is taken from the player or
+the command block object. If the command is entered in the console,
+the system tries the string "world" if no world name is given.
 
 ## Permissions
 alveran.use
@@ -82,9 +87,9 @@ modify the messages and add additional langauges.
 ## API
 This plugin has a simple API.
 The API can be used to call Alveran from other plugins.
-  public boolean PerformBlessing()
+  public boolean performBlessing(World)
     Executes the blessing, the same as calling the "/alveran" command.
-  public boolean UnblessPlayer(Player)
+  public boolean unblessPlayer(Player)
     Removes the blessing from the given player.
 Get the API object with 
   AlveranAPI alveranAPI = AlveranProvider.getAPI();
@@ -105,8 +110,12 @@ please see https://bStats.org/ for more information
 
 ## Source Code
 Source code is avail via Github.
+  https://github.com/Kirastur/alveran-sudo
 
 ## Support
-For support pleae contact us as discord
+For support pleae contact us at discord
   https://discord.gg/MBJjqUHQHR
 
+## Homepage
+  https://www.spigotmc.org/resources/alveran-sudo.87291/
+  

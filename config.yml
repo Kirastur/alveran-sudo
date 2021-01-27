@@ -27,14 +27,6 @@
 
 
 general:
-  # Name of the world
-  #
-  # - Select which world is affected
-  # - "world" is the default name if you set up a new server
-  # - Alveran does only support a single world
-  # - Alveran is not tested with multiverse
-  world: world
-  
   # If Alvaran should exposes its API to other plugins
   #
   # - If enabled, other Plugins can get an API object by using
@@ -127,7 +119,7 @@ action:
 #
 # - Please translate them in your language
 # - Use locale to select language
-# -  replace "_" char with "-"
+# - You can use two-char or five-char identifier (e.g. "de" or "de_de")
 messages:
 
   # This is the default language if locale not fond
@@ -143,10 +135,13 @@ messages:
     # and "player-can-execute-command" is set to false
     executed-as-player: You cannot use this command as a player
   
+    # This is send to the sender if he has selected an unknown world
+    world-not-found: The given world was not found
+
 # Locale example for germany
-#  de-de:
+#  de_de:
 #    blessed: Du hast den Segen von Alveran erhalten
 #    faded: Der Segen von Alveran verblaßt
 #    executed-as-player: Dieses Kommando darfst Du als Spieler nicht benutzen
-    
+#    world-not-found: Die angegebene Welt wurde nicht gefunden 
   

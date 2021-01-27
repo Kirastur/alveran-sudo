@@ -2,8 +2,9 @@ package de.polarwolf.alveran.events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-import de.polarwolf.alveran.main.Main;
+import de.polarwolf.alveran.config.AlveranConfig;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.event.EventBus;
@@ -12,62 +13,68 @@ import net.luckperms.api.event.node.NodeRemoveEvent;
 
 public class LuckPermsListener {
 	
-	private final Main main;
+	protected final Plugin plugin;
+	protected final AlveranConfig alveranConfig;
 	
-	public LuckPermsListener(Main main) {
-		this.main=main;
+	public LuckPermsListener(Plugin plugin, AlveranConfig alveranConfig) {
+		this.plugin=plugin;
+		this.alveranConfig=alveranConfig;
 		
-		LuckPerms lpapi = LuckPermsProvider.get();
-		if(lpapi==null) {
-			main.getLogger().warning("LuckPerms provider not found.");
-			return;
-		}
+		// We expect NonNull here
+		LuckPerms lpAPI = LuckPermsProvider.get();
 		
-		// get the LuckPerms event bus
-		EventBus eventBus = lpapi.getEventBus();
+		// Get the LuckPerms event bus
+		EventBus eventBus = lpAPI.getEventBus();
 		eventBus.subscribe(NodeAddEvent.class, this::onNodeAdd);
 		eventBus.subscribe(NodeRemoveEvent.class, this::onNodeRemove);
 	}
 	
-	public void HandleNodeAdd(String nodeKey, String playerName) {
-		if (!nodeKey.equalsIgnoreCase("group."+main.getAlveranConfig().getDestinationGroup())) {
+    protected void printInfo(String infoText) {
+		plugin.getLogger().info(infoText);
+    }
+    
+    protected void printPlayer(Player player, String messageText) {
+		player.sendMessage(messageText);
+    }
+    
+	public void handleNodeAdd(String nodeKey, String playerName) {
+		if (!nodeKey.equalsIgnoreCase("group."+alveranConfig.getDestinationGroup())) {
 			return;
 		}
-		Player player = main.getServer().getPlayer(playerName);
-		if (!(player==null)) {
-			player.sendMessage(main.getAlveranConfig().getMessgeBlessed(player));
+		Player player = plugin.getServer().getPlayer(playerName);
+		if (player!=null) {
+			printPlayer(player, alveranConfig.getMessgeBlessed(player));
 		}
-		main.getLogger().info("Player "+playerName+" has been blessed by Alveran");
+		printInfo("Player "+playerName+" has been blessed by Alveran");
 	}
 	
-	public void HandleNodeRemove(String nodeKey, String playerName) {
-		if (!nodeKey.equalsIgnoreCase("group."+main.getAlveranConfig().getDestinationGroup())) {
+	public void handleNodeRemove(String nodeKey, String playerName) {
+		if (!nodeKey.equalsIgnoreCase("group."+alveranConfig.getDestinationGroup())) {
 			return;
 		}
-		Player player = main.getServer().getPlayer(playerName);
-		if (!(player==null)) {
-			if (main.getAlveranConfig().getNofityPlayerOnUnbless()) {
-				player.sendMessage(main.getAlveranConfig().getMessgeFaded(player));
-			}
+		Player player = plugin.getServer().getPlayer(playerName);
+		if ((player!=null) && (alveranConfig.getNofityPlayerOnUnbless())) {
+			printPlayer(player, alveranConfig.getMessgeFaded(player));
 		}
-		main.getLogger().info("The blessing on player "+playerName+" has faded away");
+		printInfo("The blessing on player "+playerName+" has faded away");
 	}
 
 	private void onNodeAdd(NodeAddEvent event) {
         // as we want to access the Bukkit API, we need to use the scheduler to jump back onto the main thread.
-        Bukkit.getScheduler().runTask(main, () -> {
+        Bukkit.getScheduler().runTask(plugin, () -> {
         	if (event.isUser() ) {
-        		HandleNodeAdd(event.getNode().getKey(), event.getTarget().getFriendlyName());
+        		handleNodeAdd(event.getNode().getKey(), event.getTarget().getFriendlyName());
         	}
         });
     }
 
 	private void onNodeRemove(NodeRemoveEvent event) {
         // as we want to access the Bukkit API, we need to use the scheduler to jump back onto the main thread.
-        Bukkit.getScheduler().runTask(main, () -> {
+        Bukkit.getScheduler().runTask(plugin, () -> {
         	if (event.isUser() ) {
-        		HandleNodeRemove(event.getNode().getKey(), event.getTarget().getFriendlyName());
+        		handleNodeRemove(event.getNode().getKey(), event.getTarget().getFriendlyName());
         	}
         });
     }
+
 }

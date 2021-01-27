@@ -1,54 +1,57 @@
 package de.polarwolf.alveran.config;
 
-import java.util.Map;
+import javax.annotation.Nonnull;
 
 import org.bukkit.entity.Player;
-
-import de.polarwolf.alveran.main.Main;
+import org.bukkit.plugin.Plugin;
 
 public class AlveranConfig {
 	
-	private final Main main;
+	protected final Plugin plugin;
 	
-	public AlveranConfig(Main main) {
-		this.main = main;
-		main.saveDefaultConfig();
+	public AlveranConfig(Plugin plugin) {
+		this.plugin = plugin;
+		plugin.saveDefaultConfig();
 	}
 	
-	private Boolean getConfigEntryBoolean(String lineIdentifier) {
-		return main.getConfig().getBoolean(lineIdentifier);
+	protected Boolean getConfigEntryBoolean(String lineIdentifier) {
+		return plugin.getConfig().getBoolean(lineIdentifier);
 	}
 	
-	private Integer getConfigEntryInt(String lineIdentifier) {
-		return main.getConfig().getInt(lineIdentifier);
+	protected Integer getConfigEntryInt(String lineIdentifier) {
+		return plugin.getConfig().getInt(lineIdentifier);
 	}
 	
-	private String getConfigEntryStr(String lineIdentifier) {
-		return main.getConfig().getString(lineIdentifier);
+	protected String getConfigEntryStr(String lineIdentifier) {
+		return plugin.getConfig().getString(lineIdentifier);
 	}
 	
-	private String getConfigEntryMessage(Player player, String messageIdentifier) {
-		String message = null;
-		String locale = player.getLocale().replace("_","-");
-		Map<String, Object> translations = main.getConfig().getConfigurationSection("messages").getValues(false);
-		if (translations.keySet().stream().anyMatch(s ->s.equals(locale))) {
-			message = getConfigEntryStr("messages."+locale+"."+messageIdentifier);
-			if (!(message==null)) {
-				if (message.length() > 0) {
+	protected String getConfigEntryMessageLocale (String messageIdentifier, String locale) {
+		return getConfigEntryStr("messages."+locale+"."+messageIdentifier);
+	}
+	
+	protected @Nonnull String getConfigEntryMessage(Player player, String messageIdentifier) {
+		if (player!=null) {
+			String locale = player.getLocale();		
+			String message = getConfigEntryMessageLocale(messageIdentifier, locale);
+			if ((message!=null) && (!message.isEmpty())) {
 					return message;
-				}
+			}
+			String locale2 = player.getLocale().substring(0,2);
+			String message2 = getConfigEntryMessageLocale(messageIdentifier, locale2);
+			if ((message2!=null) && (!message2.isEmpty())) {
+				return message2;
 			}
 		}
-		message = getConfigEntryStr("messages.default."+messageIdentifier);
-		return message;
+		String defaultMessage = getConfigEntryMessageLocale(messageIdentifier, "default");
+		if ((defaultMessage!=null) && (!defaultMessage.isEmpty())) {
+			return defaultMessage;
+		}
+		return "ALVERAN ERROR";
 	}
 
 	
 	// General Settings
-	
-	public String getWorld() {
-		return getConfigEntryStr("general.world");
-	}
 	
 	public Boolean getEnableAPI() {
 		return getConfigEntryBoolean("general.enable-api");
@@ -94,15 +97,18 @@ public class AlveranConfig {
 	
 	//Messages
 
-	public String getMessgeBlessed(Player player) {
+	public @Nonnull String getMessgeBlessed(Player player) {
 		return getConfigEntryMessage(player, "blessed");
 	}
 		
-	public String getMessgeFaded(Player player) {
+	public @Nonnull String getMessgeFaded(Player player) {
 		return getConfigEntryMessage(player, "faded");
 	}
-	public String getMessageExecutedAsPlayer(Player player) {
-		return getConfigEntryMessage(player, "executedAsPlayer");
+	public @Nonnull String getMessageExecutedAsPlayer(Player player) {
+		return getConfigEntryMessage(player, "executed-as-player");
 	}
 	
+	public @Nonnull String getMessageWorldNotFound(Player player) {
+		return getConfigEntryMessage(player, "world-not-found");
+	}
 }
