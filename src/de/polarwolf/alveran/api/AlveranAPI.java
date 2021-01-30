@@ -207,5 +207,18 @@ public class AlveranAPI {
 		return unblessSinglePlayer(player, destinationGroupName, blessingDuration);
 	}
 
+    public boolean isPlayerBlessed(Player player) { 
+
+    	// Get Group Name
+    	String blessedGroupName = alveranConfig.getDestinationGroup();
+
+    	// Get the LuckPerm user-object from player
+		LuckPerms lpAPI = LuckPermsProvider.get();
+    	User user = lpAPI.getPlayerAdapter(Player.class).getUser(player);
+
+    	Collection<Group> inheritedGroups = user.getInheritedGroups(user.getQueryOptions());
+    	return inheritedGroups.stream().anyMatch(g ->g.getName().equals(blessedGroupName));
+	}
+
 }
 

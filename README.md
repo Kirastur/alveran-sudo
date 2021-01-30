@@ -87,10 +87,14 @@ modify the messages and add additional langauges.
 ## API
 This plugin has a simple API.
 The API can be used to call Alveran from other plugins.
-  public boolean performBlessing(World)
+  boolean performBlessing(World)
     Executes the blessing, the same as calling the "/alveran" command.
-  public boolean unblessPlayer(Player)
+	return: true=OK, false=ERROR
+  boolean unblessPlayer(Player)
     Removes the blessing from the given player.
+	return: true=OK, false=ERROR
+  boolean isPlayerBlessed(Player)
+	return: true = Player has blessing (is groupmember), false = has not
 Get the API object with 
   AlveranAPI alveranAPI = AlveranProvider.getAPI();
 
