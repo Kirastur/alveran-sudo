@@ -12,8 +12,7 @@ import de.polarwolf.alveran.events.PlayerListener;
 
 
 public final class Main extends JavaPlugin {
-	
-	
+		
 	@Override
 	public void onEnable() {
 		
@@ -39,8 +38,9 @@ public final class Main extends JavaPlugin {
 		new LuckPermsListener(this, alveranConfig);
 
 		// Enable bStats Metrics
-		int pluginId = 9788; // Metrics of "Alveran" from "Kirastur"
-		new MetricsLite(this, pluginId);
+		// Please download the bstats-code direct form their homepage
+		// or disable the following instruction
+		new MetricsLite(this, MetricsLite.PLUGINID_AVLERAN);
 
 		getLogger().info("Alveran is ready to bless players");
 	}

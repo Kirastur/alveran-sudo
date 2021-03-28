@@ -23,7 +23,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent evt) {
 		if (alveranConfig.getUnblessOnLeave()) {
 			Player player = evt.getPlayer();
-			alveranAPI.unblessPlayer(player);
+			alveranAPI.unblessPlayer(player, true);
 		}
 	}
 	
@@ -31,7 +31,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerQuit (PlayerQuitEvent evt) {
 		if (alveranConfig.getUnblessOnLeave()) {
 			Player player = evt.getPlayer();
-			alveranAPI.unblessPlayer(player);
+			alveranAPI.unblessPlayer(player, true);
 		}
 	}
 

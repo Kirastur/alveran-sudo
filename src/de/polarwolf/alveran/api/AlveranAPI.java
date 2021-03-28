@@ -113,14 +113,14 @@ public class AlveranAPI {
 		
 		// Print the result to the player and console
 		if (isAlreadyBlessed) {
-			printDebug("Player has been blessed again by Alveran for "+blessingDuration+" hours");
+			printInfo("Player has been blessed again by Alveran for "+blessingDuration+" hours");
 		} else {
-			printDebug("Player has been blessed by Alveran for "+blessingDuration+" hours");
+			printInfo("Player has been blessed by Alveran for "+blessingDuration+" hours");
 		}
 		return true;
 	}
 
-    protected boolean unblessSinglePlayer(Player player, String destinationGroupName, int blessingDuration) {
+    protected boolean unblessSinglePlayer(Player player, String destinationGroupName, int blessingDuration, boolean supressWarnings) {
 
     	// get the LuckPerm user-object from player
 		LuckPerms lpAPI = LuckPermsProvider.get();
@@ -136,8 +136,10 @@ public class AlveranAPI {
     	InheritanceNode node = InheritanceNode.builder(destinationGroupName).expiry(Duration.ofHours(blessingDuration)).build();
 		DataMutateResult result = user.data().remove(node);
 		if (!result.wasSuccessful()) {
-			printWarning("Something went wrong while remove blessing from "+player.getName());
-			printWarning("LuckPerms says: "+result.toString());
+			if ((!supressWarnings) || isDebug()) {
+				printWarning("Something went wrong while remove blessing from "+player.getName());
+				printWarning("LuckPerms says: "+result.toString());
+			}
 			return false;
 		}
 
@@ -145,7 +147,7 @@ public class AlveranAPI {
 		lpAPI.getUserManager().saveUser(user);
 
 		// Print the result to the player and console
-		printDebug("Player "+player.getName()+" has lost his blessing");
+		printInfo("Player "+player.getName()+" has lost his blessing");
 		return true;
 	}
     	
@@ -165,7 +167,7 @@ public class AlveranAPI {
 				 				.getPlatform()
 				 				.getRegionContainer()
 				 				.get(BukkitAdapter.adapt(world))
-				 				.getRegion (regionName);
+				 				.getRegion(regionName);
 		if (region==null) {
 			printNotFound("WorldGuard Region", regionName);
 			return false;
@@ -191,7 +193,7 @@ public class AlveranAPI {
 		return true;
     }
 
-	public boolean unblessPlayer(Player player) {
+	public boolean unblessPlayer(Player player, boolean supressWarnings) {
 		
 		printDebug("Perform unblessing");
 
@@ -204,7 +206,7 @@ public class AlveranAPI {
 			return false;
 		}
 		
-		return unblessSinglePlayer(player, destinationGroupName, blessingDuration);
+		return unblessSinglePlayer(player, destinationGroupName, blessingDuration, supressWarnings);
 	}
 
     public boolean isPlayerBlessed(Player player) { 
