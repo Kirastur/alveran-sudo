@@ -16,7 +16,7 @@ Then the "blessing" could be a LuckPerms group containing the "luckperms.autoop"
 (For this, "auto-op" must be set to TRUE in LuckPerms configuration).
 
 ## Documentation
-Please see the Github Wiki
+Please see the Github Wiki.
 
 ## Support
 For support please contact us as discord https://discord.gg/MBJjqUHQHR
