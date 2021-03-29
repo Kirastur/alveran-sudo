@@ -15,9 +15,11 @@ For example the player sometimes wants to edit a command block, and for this he 
 Then the "blessing" could be a LuckPerms group containing the "luckperms.autoop" permission which gives the player OP.
 (For this, "auto-op" must be set to TRUE in LuckPerms configuration).
 
+## Documentation
+Please see the Github Wiki
+
 ## Support
-For support please contact us as discord
-  https://discord.gg/MBJjqUHQHR
+For support please contact us as discord https://discord.gg/MBJjqUHQHR
 
 ## Homepage
 https://www.spigotmc.org/resources/alveran-sudo.87291/
