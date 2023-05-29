@@ -1,0 +1,32 @@
+name: Alveran
+version: 2.0
+description: Get celestical power
+authors: [Kirastur]
+website: https://www.spigotmc.org/resources/alveran-sudo.87291
+
+api-version: 1.19
+load: POSTWORLD
+main: de.polarwolf.alveran.main.Main
+depend: [WorldEdit, WorldGuard, LuckPerms]
+
+commands:
+  alveran:
+    description: Bless players
+    permission: alveran.use
+
+permissions:
+  alveran.use:
+    description: Should user be able to use the alveran command?
+    default: op
+
+  alveran.priest:
+    description: Should user be entitled to to call down the Alveran blessing to himself and to other acolytes?
+    default: false
+
+  alveran.acolyte:
+    description: Should user be able to retrieve the alveran blessing?
+    default: false
+
+  alveran.notify:
+    description: Should user be notified about other player's blessing change? 
+    default: op

@@ -1,114 +1,116 @@
 package de.polarwolf.alveran.config;
 
-import javax.annotation.Nonnull;
-
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class AlveranConfig {
-	
-	protected final Plugin plugin;
-	
-	public AlveranConfig(Plugin plugin) {
-		this.plugin = plugin;
-		plugin.saveDefaultConfig();
-	}
-	
-	protected Boolean getConfigEntryBoolean(String lineIdentifier) {
-		return plugin.getConfig().getBoolean(lineIdentifier);
-	}
-	
-	protected Integer getConfigEntryInt(String lineIdentifier) {
-		return plugin.getConfig().getInt(lineIdentifier);
-	}
-	
-	protected String getConfigEntryStr(String lineIdentifier) {
-		return plugin.getConfig().getString(lineIdentifier);
-	}
-	
-	protected String getConfigEntryMessageLocale (String messageIdentifier, String locale) {
-		return getConfigEntryStr("messages."+locale+"."+messageIdentifier);
-	}
-	
-	protected @Nonnull String getConfigEntryMessage(Player player, String messageIdentifier) {
-		if (player!=null) {
-			String locale = player.getLocale();		
-			String message = getConfigEntryMessageLocale(messageIdentifier, locale);
-			if ((message!=null) && (!message.isEmpty())) {
-					return message;
-			}
-			String locale2 = player.getLocale().substring(0,2);
-			String message2 = getConfigEntryMessageLocale(messageIdentifier, locale2);
-			if ((message2!=null) && (!message2.isEmpty())) {
-				return message2;
-			}
-		}
-		String defaultMessage = getConfigEntryMessageLocale(messageIdentifier, "default");
-		if ((defaultMessage!=null) && (!defaultMessage.isEmpty())) {
-			return defaultMessage;
-		}
-		return "ALVERAN ERROR";
+
+	public static final String SECTION_GENERAL = "general";
+	public static final String SECTION_PROTECTION = "protection";
+	public static final String SECTION_ACTION = "action";
+
+	public static final String PARAM_GENERAL_PLAYER_CAN_EXECUTE_COMMAND = "player-can-execute-command";
+	public static final String PARAM_GENERAL_ENABLE_DEBUG = "enableDebug";
+	public static final String PARAM_PROTECTION_REGION = "region";
+	public static final String PARAM_PROTECTION_ACTOR_PERMISSION = "actorPermission";
+	public static final String PARAM_PROTECTION_RECEIVE_PERMISSION = "receivePermission";
+	public static final String PARAM_ACTION_DESTINATION_GROUP = "destination-group";
+	public static final String PARAM_ACTION_BLESSING_DURATION = "blessing-duration-hours";
+	public static final String PARAM_ACTION_UNBLESS_ON_LEAVE = "unbless-on-leave";
+	public static final String PARAM_ACTION_UNBLESS_NOTIFY = "notify-on-unbless";
+	public static final String PARAM_ACTION_NOTIFY_SOUND = "notifySound";
+
+	public static final boolean DEFAULT_GENERAL_PLAYER_CAN_EXECUTE_COMMAND = true;
+	public static final boolean DEFAULT_GENERAL_ENABLE_DEBUG = false;
+	public static final String DEFAULT_PROTECTION_REGION = "alveran";
+	public static final String DEFAULT_PROTECTION_ACTOR_PERMISSION = "alveran.priest";
+	public static final String DEFAULT_PROTECTION_RECEIVE_PERMISSION = "alveran.acolyte";
+	public static final String DEFAULT_ACTION_DESTINATION_GROUP = "alveran";
+	public static final int DEFAULT_ACTION_BLESSING_DURATION = 24;
+	public static final boolean DEFAULT_ACTION_UNBLESS_ON_LEAVE = true;
+	public static final boolean DEFAULT_ACTION_UNBLESS_NOTIFY = true;
+	public static final String DEFAULT_ACTION_NOTIFY_SOUND = "";
+
+	protected boolean canPlayerExecuteCommand = DEFAULT_GENERAL_PLAYER_CAN_EXECUTE_COMMAND;
+	protected boolean enableDebug = DEFAULT_GENERAL_ENABLE_DEBUG;
+	protected String region = DEFAULT_PROTECTION_REGION;
+	protected String actorPermission = DEFAULT_PROTECTION_ACTOR_PERMISSION;
+	protected String receivePermission = DEFAULT_PROTECTION_RECEIVE_PERMISSION;
+	protected String destinationGroup = DEFAULT_ACTION_DESTINATION_GROUP;
+	protected int blessingDuration = DEFAULT_ACTION_BLESSING_DURATION;
+	protected boolean unblessOnLeave = DEFAULT_ACTION_UNBLESS_ON_LEAVE;
+	protected boolean notifyOnUnbless = DEFAULT_ACTION_UNBLESS_NOTIFY;
+	protected String notifySound = DEFAULT_ACTION_NOTIFY_SOUND;
+
+	public AlveranConfig() {
 	}
 
-	
-	// General Settings
-	
-	public Boolean getEnableAPI() {
-		return getConfigEntryBoolean("general.enable-api");
-	}
-		
-	public Boolean getExecuteAsPlayer() {
-		return getConfigEntryBoolean("general.player-can-execute-command");
+	public AlveranConfig(ConfigurationSection configurationSection) {
+		ConfigurationSection sectionGeneral = configurationSection.getConfigurationSection(SECTION_GENERAL);
+		ConfigurationSection sectionProtection = configurationSection.getConfigurationSection(SECTION_PROTECTION);
+		ConfigurationSection sectionAction = configurationSection.getConfigurationSection(SECTION_ACTION);
+
+		if (sectionGeneral != null) {
+			canPlayerExecuteCommand = sectionGeneral.getBoolean(PARAM_GENERAL_PLAYER_CAN_EXECUTE_COMMAND,
+					DEFAULT_GENERAL_PLAYER_CAN_EXECUTE_COMMAND);
+			enableDebug = sectionGeneral.getBoolean(PARAM_GENERAL_ENABLE_DEBUG, DEFAULT_GENERAL_ENABLE_DEBUG);
+		}
+
+		if (sectionProtection != null) {
+			region = sectionProtection.getString(PARAM_PROTECTION_REGION, DEFAULT_PROTECTION_REGION);
+			actorPermission = sectionProtection.getString(PARAM_PROTECTION_ACTOR_PERMISSION,
+					DEFAULT_PROTECTION_ACTOR_PERMISSION);
+			receivePermission = configurationSection.getString(PARAM_PROTECTION_RECEIVE_PERMISSION,
+					DEFAULT_PROTECTION_RECEIVE_PERMISSION);
+		}
+
+		if (sectionAction != null) {
+			destinationGroup = sectionAction.getString(PARAM_ACTION_DESTINATION_GROUP,
+					DEFAULT_ACTION_DESTINATION_GROUP);
+			blessingDuration = sectionAction.getInt(PARAM_ACTION_BLESSING_DURATION, DEFAULT_ACTION_BLESSING_DURATION);
+			unblessOnLeave = sectionAction.getBoolean(PARAM_ACTION_UNBLESS_ON_LEAVE, DEFAULT_ACTION_UNBLESS_ON_LEAVE);
+			notifyOnUnbless = sectionAction.getBoolean(PARAM_ACTION_UNBLESS_NOTIFY, DEFAULT_ACTION_UNBLESS_NOTIFY);
+			notifySound = sectionAction.getString(PARAM_ACTION_NOTIFY_SOUND, DEFAULT_ACTION_NOTIFY_SOUND);
+		}
 	}
 
-	public Boolean getDebug() {
-		return getConfigEntryBoolean("general.debug");
+	public boolean canPlayerExecuteCommand() {
+		return canPlayerExecuteCommand;
 	}
-	
-	// Authentication
+
+	public boolean isEnableDebug() {
+		return enableDebug;
+	}
 
 	public String getRegion() {
-		return getConfigEntryStr("protection.region");
+		return region;
 	}
-	
-	public String getPermission() {
-		return getConfigEntryStr("protection.permission");		
-	}
-	
 
-	// Action
+	public String getActorPermission() {
+		return actorPermission;
+	}
+
+	public String getReceivePermission() {
+		return receivePermission;
+	}
 
 	public String getDestinationGroup() {
-		return getConfigEntryStr("action.destination-group");				
-	}
-	
-	public Integer getDuration() {
-		return getConfigEntryInt("action.blessing-duration-hours");		
-	}
-	
-	public Boolean getUnblessOnLeave() {
-		return getConfigEntryBoolean("action.unbless-on-leave");		
+		return destinationGroup;
 	}
 
-	public Boolean getNofityPlayerOnUnbless() {
-		return getConfigEntryBoolean("action.notify-on-unbless");		
+	public int getBlessingDuration() {
+		return blessingDuration;
 	}
 
-	
-	//Messages
+	public boolean isUnblessOnLeave() {
+		return unblessOnLeave;
+	}
 
-	public @Nonnull String getMessgeBlessed(Player player) {
-		return getConfigEntryMessage(player, "blessed");
+	public boolean isNotifyOnUnbless() {
+		return notifyOnUnbless;
 	}
-		
-	public @Nonnull String getMessgeFaded(Player player) {
-		return getConfigEntryMessage(player, "faded");
+
+	public String getNotifySound() {
+		return notifySound;
 	}
-	public @Nonnull String getMessageExecutedAsPlayer(Player player) {
-		return getConfigEntryMessage(player, "executed-as-player");
-	}
-	
-	public @Nonnull String getMessageWorldNotFound(Player player) {
-		return getConfigEntryMessage(player, "world-not-found");
-	}
+
 }
